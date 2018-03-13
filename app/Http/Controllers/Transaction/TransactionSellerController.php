@@ -7,23 +7,18 @@ use App\Transaction;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class TransactionController extends ApiController
+class TransactionSellerController extends ApiController
 {
     /**
      * Display a listing of the resource.
      *
+     * @param Transaction $transaction
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Transaction $transaction)
     {
-        $transactions = Transaction::all();
-        return $this->showAll($transactions);
-    }
-
-
-    public function show(Transaction $transaction)
-    {
-        return $this->showOne($transaction);
+        $seller= $transaction->product->seller;
+        return $this->showOne($seller);
     }
 
 

@@ -1,6 +1,5 @@
 <?php
 
-use App\Buyer;
 use App\Category;
 use App\Product;
 use App\Seller;
@@ -20,14 +19,15 @@ use App\User;
 */
 
 $factory->define(User::class, function (Faker $faker) {
+    static $password;
 
     return [
         'name' => $faker->name,
         'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', // secret
+        'password' => $password ?: $password = bcrypt('secret'),
         'remember_token' => str_random(10),
         'verified' => $verified = $faker->randomElement([User::VERIFIED_USER, User::UNVERIFIED_USER]),
-        'verification_token' => $verified == User::UNVERIFIED_USER ? null: User::generateVerificationCode(),
+        'verification_token' => $verified == User::UNVERIFIED_USER ? null : User::generateVerificationCode(),
         'admin' => $verified = $faker->randomElement([User::ADMIN_USER, User::REGULAR_USER]),
     ];
 });
@@ -57,7 +57,7 @@ $factory->define(Transaction::class, function (Faker $faker) {
     $buyer = User:: all()->except($seller->id)->random();
 
     return [
-        'quantity' => $faker->randomBetween(1,3),
+        'quantity' => $faker->numberBetween(1,3),
         'buyer_id' => $buyer->id,
         'product_id' => $seller->products->random()->id,
 
